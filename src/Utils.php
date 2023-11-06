@@ -4,10 +4,11 @@ namespace Gravita\Http;
 
 class Utils
 {
-    public static function read_json_input() {
-        return json_decode(file_get_contents("php://input"),true);
+    public static function read_json_input()
+    {
+        return json_decode(file_get_contents("php://input"), true);
     }
-    
+
     public static function generate_token($length = 32)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

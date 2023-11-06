@@ -5,8 +5,14 @@
     "autoload": {
         "psr-4": {
             "Gravita\\Http\\Config\\": "config/",
-            "Gravita\\Http\\": "src/"
-        }
+            "Gravita\\Http\\": "src/",
+            "Microwin7\\TextureProvider\\Configs\\": "config/texture-provider/",
+            "Microwin7\\PHPUtils\\Configs\\": "config/php-utils/^1.5.0/",
+            "Microwin7\\PHPUtils\\Exceptions\\Handler\\": "src/Exceptions/Handler/"
+        },
+        "files": [
+            "src/AutoLoads/define_constants.php"
+        ]
     },
     "authors": [
         {
@@ -14,5 +20,15 @@
             "email": "12893402+gravit0@users.noreply.github.com"
         }
     ],
-    "require": {}
+    "minimum-stability": "dev",
+    "require": {
+        "microwin7/php-utils": "v1.5.0.12",
+        "microwin7/texture-provider": "v5.5.0.2",
+        "sentry/sdk": "dev-master"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
 }
