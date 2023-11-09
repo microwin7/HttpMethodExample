@@ -69,7 +69,7 @@ public class MyHttpAuthCoreProvider extends AuthCoreProvider implements AuthSupp
         try {
             var response = requester.send(
                     requester.get(
-                            url + "?method=" + "getUserByUUID&username=" + uuid.toString(),
+                            url + "?method=" + "getUserByUUID&uuid=" + uuid.toString(),
                             bearerToken),
                     MyHttpUser.class);
             if (response.isSuccessful()) {
