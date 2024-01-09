@@ -2,9 +2,7 @@
 
 namespace Gravita\Http\Methods;
 
-use Gravita\Http\User;
 use Gravita\Http\UserSession;
-use Microwin7\PHPUtils\DB\Connector;
 use Microwin7\PHPUtils\Attributes\AsArguments;
 use Gravita\Http\Exceptions\HttpErrorException;
 use Microwin7\PHPUtils\Request\RequiredArguments;
@@ -14,7 +12,6 @@ class JoinServer extends RequiredArguments implements IActionHandler
 {
     public function execute()
     {
-        User::$DB = UserSession::$DB = (new Connector)->{''};
         $session = UserSession::get_by_access_token_with_user($this->accessToken);
         null !== $session ?: throw new HttpErrorException(SESSION_NOT_FOUND);
 

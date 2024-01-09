@@ -2,10 +2,10 @@
 
 namespace Microwin7\PHPUtils\Exceptions\Handler;
 
-use Gravita\Http\Exceptions\UserNotFound;
-use Microwin7\PHPUtils\Response\Response;
 use Microwin7\PHPUtils\Configs\MainConfig;
+use Microwin7\PHPUtils\Response\JsonResponse;
 use Gravita\Http\Exceptions\HttpErrorException;
+use Microwin7\PHPUtils\Exceptions\UserNotFoundException;
 
 class ExceptionHandler
 {
@@ -16,15 +16,15 @@ class ExceptionHandler
     }
     public function exception_handler(\Throwable $exception)
     {
-        if ($exception instanceof UserNotFound) {
-            REsponse::failed(code_response: $exception->getCode());
+        if ($exception instanceof UserNotFoundException) {
+            JsonResponse::failed(code_response: $exception->getCode());
         }
         if ($exception instanceof HttpErrorException) {
-            Response::failed(error: $exception->getMessage(), code: $exception->getCode());
+            JsonResponse::failed(error: $exception->getMessage(), code: $exception->getCode());
         }
         if ($exception instanceof \Throwable) {
             if (MainConfig::SENTRY_ENABLE) \Sentry\captureException($exception);
-            Response::failed(error: $exception->getMessage());
+            JsonResponse::failed(error: $exception->getMessage());
         }
     }
 }

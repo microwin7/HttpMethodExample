@@ -3,17 +3,14 @@
 namespace Gravita\Http;
 
 use JsonSerializable;
-use Microwin7\PHPUtils\DB\DriverPDO;
-use Microwin7\PHPUtils\DB\DriverMySQLi;
+use Microwin7\PHPUtils\DB\SingletonConnector;
 use Microwin7\TextureProvider\Texture\Texture;
 use Gravita\Http\Exceptions\HttpErrorException;
-use Microwin7\TextureProvider\Utils\RequestParams;
+use Microwin7\TextureProvider\Request\Provider\RequestParams;
 use Microwin7\TextureProvider\Data\User as TextureProviderUser;
 
 class User implements JsonSerializable
 {
-    public static DriverPDO|DriverMySQLi $DB;
-
     public function __construct(
         public int $id,
         public string $username,
@@ -28,16 +25,16 @@ class User implements JsonSerializable
     }
     public static function get_by_id(int $id): static|null
     {
-        return User::read_from_row(static::$DB->query("SELECT * FROM users WHERE id = ?", "i", $id)->getStatementHandler()->fetch(\PDO::FETCH_OBJ));
+        return User::read_from_row(SingletonConnector::get()->query("SELECT * FROM users WHERE id = ?", "i", $id)->getStatementHandler()->fetch(\PDO::FETCH_OBJ));
     }
     public static function get_by_uuid($uuid): static|null
     {
-        return User::read_from_row(static::$DB->query("SELECT * FROM users WHERE uuid = ?", "s", $uuid)->getStatementHandler()->fetch(\PDO::FETCH_OBJ));
+        return User::read_from_row(SingletonConnector::get()->query("SELECT * FROM users WHERE uuid = ?", "s", $uuid)->getStatementHandler()->fetch(\PDO::FETCH_OBJ));
     }
     public static function get_by_username($username): static|null
     {
         return User::read_from_row(
-            static::$DB->query("SELECT * FROM users WHERE username = ?", "s", $username)->getStatementHandler()->fetch(\PDO::FETCH_OBJ)
+            SingletonConnector::get()->query("SELECT * FROM users WHERE username = ?", "s", $username)->getStatementHandler()->fetch(\PDO::FETCH_OBJ)
         );
     }
     public static function read_from_row(object|false $row): static|null
@@ -53,8 +50,11 @@ class User implements JsonSerializable
             "roles" => [],
             "permissions" => [],
             "assets" => new Texture(
-                new TextureProviderUser(new RequestParams(uuid: $this->uuid, username: $this->username)),
-                static::$DB
+                new TextureProviderUser(
+                    (new RequestParams)
+                        ->setVariable('username', $this->username)
+                        ->setVariable('uuid', $this->uuid)
+                ),
             ),
             "properties" => (object)[],
         ];

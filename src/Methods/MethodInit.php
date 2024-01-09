@@ -8,13 +8,14 @@ use Microwin7\PHPUtils\Attributes\AsArguments;
 use Gravita\Http\Exceptions\HttpErrorException;
 use Microwin7\PHPUtils\Request\RequiredArguments;
 use Microwin7\PHPUtils\Exceptions\NoSuchRequestMethodException;
+use Microwin7\PHPUtils\Security\BearerToken;
 
 #[AsArguments(whereSearch: 'GET', required: ['method'])]
 class MethodInit extends RequiredArguments implements IActionHandler
 {
     public function execute()
     {
-        Utils::get_bearer_token() === MainConfig::BEARER_TOKEN ?: throw new HttpErrorException(BEARER_TOKEN_INCORRECT);
+        BearerToken::validateBearer() ?: throw new HttpErrorException(BEARER_TOKEN_INCORRECT);
 
         match (MethodTypeEnum::tryFrom($this->method)) {
             MethodTypeEnum::AUTHORIZE => (new Authorize)->execute(),
